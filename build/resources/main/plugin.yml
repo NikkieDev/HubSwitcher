@@ -1,0 +1,4 @@
+name: HubSwitcher
+version: 1.0
+main: nl.kingdom_smp.HubSwitcher
+api-version: '1.21.11'
