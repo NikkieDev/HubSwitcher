@@ -7,7 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import nl.kingdom_smp.Model.Hub;
+import nl.kingdom_smp.model.Hub;
 
 public class HubSwitcher extends JavaPlugin {
 	private int hubId;
@@ -35,16 +35,14 @@ public class HubSwitcher extends JavaPlugin {
 
 			int id = server.getInt("id");
 			String name = server.getString("name");
-			String address = server.getString("address");
-			int port = Integer.parseInt(address.split(":")[1]);
+			String rawAddress = server.getString("address");
+
+			String[] parts = rawAddress.split(":");
+			String address = parts[0];
+			int port = Integer.parseInt(parts[1]);
 
 			Hub hub = new Hub(id, name, address, port);
 			this.hubs.add(hub);
-		}
-
-		getLogger().info("Hubs available: ");
-		for (Hub hub : this.hubs) {
-			getLogger().info(hub.address() + " : " + String.valueOf(hub.port()));
 		}
 	}
 }

@@ -15,7 +15,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import nl.kingdom_smp.Model.Hub;
+import nl.kingdom_smp.model.Hub;
 
 public class CommandHub {
 	public static LiteralCommandNode<CommandSourceStack> createCommand(int activeHubId, List<Hub> hubs) {
@@ -32,7 +32,7 @@ public class CommandHub {
 			// Get's the chest inventory. getBottomInventory is the player's inventory
 			Inventory topInv = view.getTopInventory();
 			for (int i = 0; i < hubs.size(); i++) {
-				Material block = activeHubId == hubs.get(i).id() ? Material.BLUE_TERRACOTTA : Material.RED_TERRACOTTA;
+				Material block = hubs.get(i).isConnected(activeHubId) ? Material.BLUE_TERRACOTTA : Material.RED_TERRACOTTA;
 				ItemStack item = new ItemStack(block, i+1);
 				topInv.setItem(i, item);
 			}
