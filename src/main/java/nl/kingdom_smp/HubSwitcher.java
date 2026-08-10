@@ -1,8 +1,6 @@
 package nl.kingdom_smp;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HexFormat;
 import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -45,9 +43,6 @@ public class HubSwitcher extends JavaPlugin {
 
 			Hub hub = new Hub(id, name, address, port);
 			this.hubs.add(hub);
-			if (hub.id() != this.hubId) {
-				getLogger().info("returned: " + HexFormat.of().formatHex(hub.handshake()));;
-			}
 		}
 	}
 }

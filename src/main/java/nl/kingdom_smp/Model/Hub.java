@@ -12,61 +12,61 @@ public record Hub (int id, String name, String address, int port) {
 		return this.id == hubId;
 	}
 
-	public byte[] handshake() {
+	public int ping() {
 		Connection conn;
+
 		try {
-			conn = new Connection(address, port);
+			conn = new Connection(this.address, this.port);
+			this.handshake(conn);
 		} catch (IOException e) {
-			return new byte[0];
+			return -1;
 		}
 
-		byte[] host = address.getBytes(StandardCharsets.UTF_8);
-		byte[] packetType = Util.encodeVarInt(0x00);
+		long timeBefore = System.currentTimeMillis();
+		ByteBuffer packet = ByteBuffer.allocate(9);
+		packet.put(Util.encodeVarInt(0x01));
+		packet.putLong(timeBefore);
+
+		try {
+			conn.write(Util.encodeVarInt(packet.capacity()));
+			conn.write(packet.array());
+
+			int responseLength = conn.readVarInt();
+			conn.read(responseLength);
+		} catch (IOException e) {
+			conn.close();
+			return -1;
+		}
+
+		return (int) (System.currentTimeMillis() - timeBefore);
+	}
+
+	private void handshake(Connection conn) throws IOException {
+		byte[] host = this.address.getBytes(StandardCharsets.UTF_8);
+		byte[] packetId = Util.encodeVarInt(0x00);
 		byte[] version = Util.encodeVarInt(-0x01);
 		byte[] hostLength = Util.encodeVarInt(host.length);
 		byte[] nextState = Util.encodeVarInt(0x01);
 
-		ByteBuffer buf = ByteBuffer.allocate(
+		ByteBuffer packet = ByteBuffer.allocate(
 			host.length
-			+ packetType.length
+			+ packetId.length
 			+ version.length
 			+ hostLength.length
-			+ 2 // Short int
+			+ 2 // port, short int
 			+ nextState.length
 		);
 
-		buf.put(packetType);
-		buf.put(version);
-		buf.put(hostLength);
-		buf.put(host);
-		buf.putShort((short) port);
-		buf.put(nextState);
+		packet.put(packetId);
+		packet.put(version);
+		packet.put(hostLength);
+		packet.put(host);
+		packet.putShort((short) this.port);
+		packet.put(nextState);
 
-		byte[] statusRequest = Util.encodeVarInt(0x00);
-		byte[] pingRequest = Util.encodeVarInt(0x01);
-
-		try {
-			conn.write(Util.encodeVarInt(buf.capacity()));
-			conn.write(buf.array());
-
-			conn.write(Util.encodeVarInt(statusRequest.length));
-			conn.write(statusRequest);
-
-			int responseLength = conn.readVarInt();
-			conn.read(responseLength);
-
-			ByteBuffer buf2 = ByteBuffer.allocate(9);
-			buf2.put(pingRequest);
-			buf2.putLong(12345689L);
-
-			conn.write(Util.encodeVarInt(buf2.capacity()));
-			conn.write(buf2.array());
-
-			responseLength = conn.readVarInt();
-			return conn.read(responseLength);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new byte[0];
-		}
+		conn.write(Util.encodeVarInt(packet.capacity()));
+		conn.write(packet.array());
+		conn.write(Util.encodeVarInt(packetId.length));
+		conn.write(packetId);
 	}
 }

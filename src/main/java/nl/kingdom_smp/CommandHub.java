@@ -51,9 +51,11 @@ public class CommandHub {
 		ItemMeta meta = item.getItemMeta();
 		List<Component> loreList = new ArrayList<Component>();
 
-//		loreList.add(Component.text("Latency: " + hub.ping()))
-//
-//		meta.customName(Component.text("Hub#" + hub.id()));
-//		meta.lore();
+		String status = 0 < hub.ping() ? "Online" : "Offline";
+		loreList.add(Component.text("Status: " + status));
+
+		meta.customName(Component.text("Hub#" + hub.id()));
+		meta.lore(loreList);
+		item.setItemMeta(meta);
 	}
 }
