@@ -1,5 +1,6 @@
 package nl.kingdom_smp;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -34,11 +36,24 @@ public class CommandHub {
 			for (int i = 0; i < hubs.size(); i++) {
 				Material block = hubs.get(i).isConnected(activeHubId) ? Material.BLUE_TERRACOTTA : Material.RED_TERRACOTTA;
 				ItemStack item = new ItemStack(block, i+1);
+				configureItem(item, hubs.get(i));
+
 				topInv.setItem(i, item);
 			}
 			
 			view.open();
 			return Command.SINGLE_SUCCESS;
 		}).build();
+	}
+
+	// Set hub as item metadata
+	private static void configureItem(ItemStack item, Hub hub) {
+		ItemMeta meta = item.getItemMeta();
+		List<Component> loreList = new ArrayList<Component>();
+
+//		loreList.add(Component.text("Latency: " + hub.ping()))
+//
+//		meta.customName(Component.text("Hub#" + hub.id()));
+//		meta.lore();
 	}
 }
