@@ -1,6 +1,6 @@
 Simple hub switcher for Minecraft Java Paper servers.
 
-requires v1.20.5 or above.
+requires v1.21.11 or above.
 
 ### How to use
 1. Download HubSwitcher.jar from this page
