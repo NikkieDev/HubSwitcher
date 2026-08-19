@@ -81,23 +81,26 @@ public class CommandHub implements Listener{
 		if (null == event.getClickedInventory()
 			|| !event.getClickedInventory().equals(event.getView().getTopInventory())
 		) {
+			event.setCancelled(true);
 			return;
 		}
 
 		ItemStack clicked = event.getCurrentItem();
 		if (null == clicked || !clicked.hasItemMeta()) {
+			event.setCancelled(true);
 			return;
 		}
 
 		Integer hubId = clicked.getPersistentDataContainer().get(this.hubIdKey, PersistentDataType.INTEGER);
 		if (null == hubId) {
+			event.setCancelled(true);
 			return;
 		}
 
-		event.setCancelled(true);
 		Hub target = this.hubs.stream().filter(h -> h.id() == hubId).findFirst().orElse(null);
 
 		if (null == target || !(event.getWhoClicked() instanceof Player player)) {
+			event.setCancelled(true);
 			return;
 		}
 
