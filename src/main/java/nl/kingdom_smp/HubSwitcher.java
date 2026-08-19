@@ -19,9 +19,12 @@ public class HubSwitcher extends JavaPlugin {
 		saveDefaultConfig();
 
 		this.registerHubs();
-		
+
+		CommandHub hubCommand = new CommandHub(this, this.hubs);
+		getServer().getPluginManager().registerEvents(hubCommand, this);
+
 		this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
-			event.registrar().register(CommandHub.createCommand(this.hubId, this.hubs));
+			event.registrar().register(hubCommand.createCommand(this.hubId));
 		});
 	}
 
