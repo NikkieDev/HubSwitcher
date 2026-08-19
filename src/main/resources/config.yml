@@ -6,9 +6,9 @@ servers:
   primaryHub:
     id: 1
     name: 'Hub 1'
-    address: play.kingdom-smp.nl:25565
+    address: play.example-mc.com:25565
 
   secondaryHub:
     id: 2
     name: 'Hub 2'
-    address: play.kingdom-smp.nl:25566
+    address: play.example-mc.com:25566
